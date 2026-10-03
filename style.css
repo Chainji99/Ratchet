@@ -676,17 +676,185 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--silver); }
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE — Mobile First
    ============================================================ */
-@media (max-width: 600px) {
-  .site-header { padding: 1rem; }
-  .header-suits { display: none; }
-  .count-btn { width: 50px; height: 68px; font-size: 1.2rem; }
-  .spin-btn-inner { padding: 1rem 2rem; font-size: 0.95rem; }
-  .cards-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .player-card { width: 100%; min-width: unset; }
+
+/* ── Touch devices: disable hover lift (avoids sticky states) ── */
+@media (hover: none) {
+  .count-btn:hover        { transform: none; box-shadow: none; }
+  .player-card:hover      { transform: none; box-shadow: 0 4px 32px rgba(0,0,0,0.4); }
+  .intro-btn:hover::before{ transform: scaleX(0); }
+  .intro-btn:hover        { color: var(--white); }
+  .spin-btn:hover::before { transform: scaleY(0); }
+  .spin-btn:hover         { color: var(--white); }
 }
 
-@media (max-width: 400px) {
-  .cards-grid { grid-template-columns: 1fr; }
+/* ── Tap highlight off ── */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ── Active press feedback for touch ── */
+.count-btn:active   { transform: scale(0.94) !important; }
+.spin-btn:active    { transform: scale(0.96) !important; }
+.card-reroll:active { opacity: 0.7; }
+.intro-btn:active   { transform: scale(0.97); }
+
+/* ============================================================
+   PHONE  —  max 480px
+   ============================================================ */
+@media (max-width: 480px) {
+
+  /* Intro */
+  .intro-content          { padding: 1.5rem 1rem; gap: 1.25rem; }
+  .intro-card-deck        { transform: scale(0.8); transform-origin: center; }
+  .intro-suit             { font-size: 3rem; }
+  .intro-title            { font-size: clamp(2.8rem, 16vw, 4rem); }
+  .intro-tagline          { font-size: 0.85rem; letter-spacing: 0.08em; }
+  .intro-sub              { font-size: 0.65rem; letter-spacing: 0.25em; }
+  .intro-btn              { padding: 0.9rem 2.2rem; font-size: 0.8rem; }
+  .intro-divider          { width: 80%; }
+
+  /* Header */
+  .site-header            { padding: 0.85rem 1rem; }
+  .header-suits           { display: none; }
+  .site-title             { font-size: 1rem; letter-spacing: 0.12em; }
+  .site-subtitle          { font-size: 0.6rem; letter-spacing: 0.1em; }
+
+  /* Sections */
+  .player-section         { padding: 1.75rem 1rem 1rem; }
+  .filter-section         { padding: 1rem; }
+  .spin-section           { padding: 1.25rem 1rem; }
+  .result-section         { padding: 1rem; }
+
+  .section-title          { font-size: 0.85rem; letter-spacing: 0.15em; gap: 0.6rem; }
+
+  /* Player count buttons — bigger touch targets */
+  .player-count-row       { gap: 0.6rem; }
+  .count-btn {
+    width: 54px;
+    height: 72px;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    min-width: 44px; /* WCAG touch target */
+  }
+  .player-display         { font-size: 0.85rem; margin-top: 1rem; }
+
+  /* Filter chips */
+  .filter-chip            { padding: 0.55rem 1rem; font-size: 0.72rem; min-height: 36px; }
+
+  /* Spin button */
+  .spin-btn-inner {
+    padding: 1rem 2rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    gap: 0.6rem;
+  }
+
+  /* Cards grid — single column on tiny screens */
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .player-card {
+    width: 100%;
+    min-height: 280px;
+    padding: 1.25rem 1rem;
+  }
+  .card-gun-name          { font-size: clamp(1.1rem, 5vw, 1.4rem); }
+  .card-reroll            { padding: 0.55rem 1.2rem; font-size: 0.7rem; min-height: 36px; }
+
+  /* Footer */
+  .site-footer            { padding: 2rem 1rem; font-size: 0.8rem; margin-top: 2rem; }
 }
+
+/* ============================================================
+   SMALL PHONE  — max 360px  (Galaxy S series, etc.)
+   ============================================================ */
+@media (max-width: 360px) {
+  .count-btn              { width: 48px; height: 64px; font-size: 1.2rem; }
+  .spin-btn-inner         { padding: 0.9rem 1.5rem; font-size: 0.8rem; }
+  .cards-grid             { max-width: 100%; }
+  .intro-title            { font-size: clamp(2.4rem, 18vw, 3.2rem); }
+}
+
+/* ============================================================
+   TABLET  —  481px → 1024px  (iPad mini / iPad / iPad Pro)
+   ============================================================ */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+  /* Intro */
+  .intro-content          { padding: 2rem; gap: 1.75rem; }
+  .intro-title            { font-size: clamp(3.5rem, 8vw, 5.5rem); }
+
+  /* Header */
+  .site-header            { padding: 1.25rem 2rem; }
+  .header-suits           { font-size: 0.85rem; letter-spacing: 0.35em; }
+  .site-title             { font-size: clamp(1.1rem, 2.5vw, 1.5rem); }
+
+  /* Sections */
+  .player-section         { padding: 2rem 1.5rem 1.5rem; }
+  .filter-section         { padding: 1.5rem; }
+  .spin-section           { padding: 1.5rem; }
+
+  /* Player count buttons */
+  .count-btn {
+    width: 64px;
+    height: 84px;
+    font-size: 1.5rem;
+  }
+
+  /* Cards grid — 2 or 3 columns depending on width */
+  .cards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+  .player-card {
+    width: 100%;
+    min-height: 300px;
+  }
+}
+
+/* iPad mini / iPad Air portrait (768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .header-suits           { display: none; }
+  .cards-grid             { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* iPad Pro / large tablets landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cards-grid             { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================================
+   DESKTOP  —  1025px+  (original styles preserved)
+   ============================================================ */
+@media (min-width: 1025px) {
+  .cards-grid             { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .player-card            { width: 240px; }
+}
+
+/* ============================================================
+   SAFE AREA  —  iPhone notch / Dynamic Island / home bar
+   ============================================================ */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .site-footer {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  }
+  .site-header {
+    padding-left:  max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* ============================================================
+   LANDSCAPE PHONE  —  short viewport
+   ============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .intro-card-deck        { display: none; }
+  .intro-content          { gap: 0.75rem; padding: 1rem; }
+  .intro-title            { font-size: 2.5rem; }
+  .intro-tagline          { display: none; }
+  .intro-divider          { display: none; }
+}
+
