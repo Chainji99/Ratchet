@@ -13,12 +13,13 @@
 </head>
 <body>
 
+  <!-- Custom cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+
   <!-- ===== CINEMATIC INTRO ===== -->
   <div id="intro-screen">
-    <!-- Canvas for particle suits -->
     <canvas id="introCanvas"></canvas>
-
-    <!-- Phase 1: Loading bar -->
     <div class="intro-phase" id="phase-load">
       <div class="load-label">LOADING</div>
       <div class="load-bar-wrap">
@@ -26,8 +27,6 @@
       </div>
       <div class="load-percent" id="loadPercent">0%</div>
     </div>
-
-    <!-- Phase 2: Logo slam -->
     <div class="intro-phase hidden" id="phase-logo">
       <div class="logo-slam">
         <div class="logo-top">CALL OF DUTY</div>
@@ -39,8 +38,6 @@
         <div class="logo-line" id="logoLine"></div>
         <div class="logo-sub" id="logoSub">WEAPON RANDOMIZER</div>
       </div>
-
-      <!-- Fan of 5 cards -->
       <div class="card-fan" id="cardFan">
         <div class="fan-card fc1"><span class="fan-suit">♠</span><span class="fan-val">A</span></div>
         <div class="fan-card fc2"><span class="fan-suit red">♥</span><span class="fan-val">K</span></div>
@@ -48,7 +45,6 @@
         <div class="fan-card fc4"><span class="fan-suit red">♦</span><span class="fan-val">J</span></div>
         <div class="fan-card fc5"><span class="fan-suit">♠</span><span class="fan-val">10</span></div>
       </div>
-
       <button class="intro-enter-btn" id="enterBtn" onclick="enterSite()">
         <span class="enter-inner">
           <span class="enter-suit">♠</span>
@@ -57,13 +53,15 @@
         </span>
         <div class="enter-glow"></div>
       </button>
-
       <p class="intro-tagline-final">Deal your fate. Pull your trigger.</p>
     </div>
   </div>
 
   <!-- ===== MAIN SITE ===== -->
   <div id="main-site" class="hidden">
+
+    <!-- Background canvas -->
+    <canvas id="bgCanvas"></canvas>
 
     <!-- Header -->
     <header class="site-header">
@@ -76,13 +74,13 @@
     </header>
 
     <!-- Player Select -->
-    <section class="player-section">
+    <section class="player-section reveal">
       <h2 class="section-title">
         <span class="ornament">✦</span>
         SELECT PLAYERS
         <span class="ornament">✦</span>
       </h2>
-      <div class="player-count-row">
+      <div class="player-count-row reveal-stagger">
         <button class="count-btn" onclick="setPlayers(1)">1</button>
         <button class="count-btn" onclick="setPlayers(2)">2</button>
         <button class="count-btn active" onclick="setPlayers(3)">3</button>
@@ -93,13 +91,13 @@
     </section>
 
     <!-- Category Filter -->
-    <section class="filter-section">
+    <section class="filter-section reveal">
       <h2 class="section-title">
         <span class="ornament">✦</span>
         WEAPON CLASS
         <span class="ornament">✦</span>
       </h2>
-      <div class="filter-row" id="categoryFilters">
+      <div class="filter-row reveal-stagger" id="categoryFilters">
         <label class="filter-chip active"><input type="checkbox" value="AR" checked> AR</label>
         <label class="filter-chip active"><input type="checkbox" value="SMG" checked> SMG</label>
         <label class="filter-chip active"><input type="checkbox" value="Sniper" checked> Sniper</label>
@@ -110,12 +108,10 @@
     </section>
 
     <!-- Spin Button -->
-    <section class="spin-section">
+    <section class="spin-section reveal">
       <button class="spin-btn" id="spinBtn" onclick="spinGuns()">
         <div class="spin-btn-inner">
-          <span class="spin-icon">🎯</span>
           <span class="spin-text">RANDOMIZE</span>
-          <span class="spin-icon">🎯</span>
         </div>
       </button>
     </section>
@@ -133,7 +129,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">
+    <footer class="site-footer reveal">
       <div class="footer-suits">♠ ♦ ♣ ♥</div>
       <p>CODM GUN ROULETTE &copy; 2026</p>
       <p class="footer-sub">May your aim be true.</p>
@@ -143,4 +139,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

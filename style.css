@@ -776,6 +776,297 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--silver); }
 
 /* ============================================================
+   LIVE ANIMATIONS — Full-Site Motion
+   ============================================================ */
+
+/* ── Custom cursor ─────────────────────────────────────────── */
+body { cursor: none; }
+#cursor {
+  position: fixed;
+  width: 20px; height: 20px;
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: width 0.2s, height 0.2s, background 0.2s, border-color 0.2s;
+  mix-blend-mode: difference;
+}
+#cursor.cursor-hover {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.08);
+}
+#cursor.cursor-click {
+  width: 10px; height: 10px;
+  background: rgba(255,255,255,0.6);
+}
+#cursor-dot {
+  position: fixed;
+  width: 4px; height: 4px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.05s;
+}
+/* Hide custom cursor on touch devices */
+@media (hover: none) {
+  body { cursor: auto; }
+  #cursor, #cursor-dot { display: none; }
+}
+
+/* ── Background canvas (main site) ────────────────────────── */
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+#main-site > *:not(#bgCanvas) { position: relative; z-index: 1; }
+
+/* ── Header animated shimmer ───────────────────────────────── */
+.site-header {
+  background: linear-gradient(90deg,
+    var(--black) 0%,
+    rgba(30,30,30,0.95) 50%,
+    var(--black) 100%);
+  background-size: 200% 100%;
+  animation: headerShimmer 8s linear infinite;
+}
+@keyframes headerShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Header suits marquee */
+.header-suits {
+  animation: suitsPulse 4s ease-in-out infinite;
+}
+@keyframes suitsPulse {
+  0%,100% { opacity: 0.15; letter-spacing: 0.5em; }
+  50%      { opacity: 0.3;  letter-spacing: 0.6em; }
+}
+
+/* Site title subtle glow cycle */
+.site-title {
+  animation: titleGlow 5s ease-in-out infinite;
+}
+@keyframes titleGlow {
+  0%,100% { text-shadow: none; }
+  50%      { text-shadow: 0 0 20px rgba(255,255,255,0.12); }
+}
+
+/* ── Scroll-reveal base state ──────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+              transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+              transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+              transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* Stagger children */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.05s; opacity:1; transform:none; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.12s; opacity:1; transform:none; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.19s; opacity:1; transform:none; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.26s; opacity:1; transform:none; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.33s; opacity:1; transform:none; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.40s; opacity:1; transform:none; }
+
+/* ── Section title ornament spin ───────────────────────────── */
+.ornament {
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+.section-title:hover .ornament {
+  transform: rotate(90deg) scale(1.3);
+  color: rgba(255,255,255,0.6);
+}
+
+/* ── Count buttons spring ──────────────────────────────────── */
+.count-btn {
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.count-btn.active {
+  animation: btnSpring 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes btnSpring {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-8px) scale(1.12); }
+  70%  { transform: translateY(-2px) scale(1.04); }
+  100% { transform: translateY(-4px) scale(1.05); }
+}
+
+/* Ripple on count-btn click */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transform: scale(0);
+  animation: rippleAnim 0.5s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ── Filter chips pop ──────────────────────────────────────── */
+.filter-chip {
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.filter-chip.active {
+  animation: chipPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes chipPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* ── Spin button idle pulse ────────────────────────────────── */
+.spin-btn {
+  animation: spinBtnIdle 3s ease-in-out infinite;
+}
+@keyframes spinBtnIdle {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+  50%      { box-shadow: 0 0 0 8px rgba(255,255,255,0.04),
+                         0 0 30px rgba(255,255,255,0.06); }
+}
+.spin-btn:hover { animation: none; }
+.spin-btn.spinning {
+  animation: spinBtnActive 0.3s ease-in-out infinite alternate;
+}
+@keyframes spinBtnActive {
+  0%   { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+  100% { box-shadow: 0 0 30px rgba(255,255,255,0.4); }
+}
+
+/* Shake text during spin */
+.spin-btn.spinning .spin-text {
+  animation: shakeText 0.08s linear infinite;
+}
+@keyframes shakeText {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-2px); }
+  75%     { transform: translateX(2px); }
+}
+
+/* ── Player card 3D tilt (set via JS) ──────────────────────── */
+.player-card {
+  transition: transform 0.15s ease, box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Shimmer sweep on card hover */
+.player-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255,255,255,0.04),
+    transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.player-card:hover::after { left: 150%; }
+
+/* Animated border glow on hover */
+.player-card:hover {
+  border-color: rgba(255,255,255,0.35);
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255,255,255,0.12),
+    0 0 30px rgba(255,255,255,0.04) inset;
+}
+
+/* Player number circle pulse */
+.card-player-num {
+  animation: numPulse 4s ease-in-out infinite;
+}
+@keyframes numPulse {
+  0%,100% { box-shadow: none; }
+  50%      { box-shadow: 0 0 0 4px rgba(255,255,255,0.06); }
+}
+
+/* Big suit float */
+.card-big-suit {
+  animation: suitDrift 6s ease-in-out infinite;
+}
+@keyframes suitDrift {
+  0%,100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+  50%      { transform: translateY(-8px) rotate(5deg); opacity: 0.15; }
+}
+
+/* Reroll button ripple */
+.card-reroll {
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── RESULTS section title flash ───────────────────────────── */
+#resultHeader.flash .section-title {
+  animation: resultFlash 0.5s ease;
+}
+@keyframes resultFlash {
+  0%   { opacity: 0; transform: scale(0.96); }
+  60%  { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Footer suits drift ────────────────────────────────────── */
+.footer-suits {
+  animation: footerDrift 5s ease-in-out infinite;
+}
+@keyframes footerDrift {
+  0%,100% { letter-spacing: 0.5em; opacity: 0.1; }
+  50%      { letter-spacing: 0.65em; opacity: 0.18; }
+}
+
+/* ── Page bg slow drift ────────────────────────────────────── */
+#main-site {
+  background: radial-gradient(ellipse at 20% 20%, rgba(255,255,255,0.02) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 80%, rgba(255,255,255,0.015) 0%, transparent 60%),
+              var(--dark);
+  animation: bgDrift 20s ease-in-out infinite alternate;
+}
+@keyframes bgDrift {
+  0%   { background-position: 20% 20%, 80% 80%; }
+  100% { background-position: 30% 15%, 70% 85%; }
+}
+
+
+/* ============================================================
    RESPONSIVE — Mobile First
    ============================================================ */
 

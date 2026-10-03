@@ -201,6 +201,7 @@ function enterSite() {
   setTimeout(() => {
     main.classList.add('visible');
     intro.style.display = 'none';
+    initMainAnimations();   // 🔥 boot all live animations
   }, 900);
 }
 
@@ -210,6 +211,186 @@ document.addEventListener('DOMContentLoaded', () => {
   runLoadingPhase();
   initFilterChips();
 });
+
+// ── Called once main site is visible ─────────────────────────
+function initMainAnimations() {
+  initCursor();
+  initBgCanvas();
+  initScrollReveal();
+  initRipple();
+  initCardTilt();
+}
+
+// ── 1. Custom Cursor ──────────────────────────────────────────
+function initCursor() {
+  const cursor    = document.getElementById('cursor');
+  const dot       = document.getElementById('cursor-dot');
+  if (!cursor || !dot) return;
+
+  let mx = -100, my = -100;
+  let cx = -100, cy = -100;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+  });
+
+  // Smooth cursor lag
+  function animCursor() {
+    cx += (mx - cx) * 0.12;
+    cy += (my - cy) * 0.12;
+    cursor.style.left = cx + 'px';
+    cursor.style.top  = cy + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // Hover state on interactive elements
+  document.querySelectorAll('button, label, a, .fan-card').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
+  });
+
+  document.addEventListener('mousedown', () => {
+    cursor.classList.add('cursor-click');
+    cursor.classList.remove('cursor-hover');
+  });
+  document.addEventListener('mouseup', () => cursor.classList.remove('cursor-click'));
+}
+
+// ── 2. Background Canvas (main site) ─────────────────────────
+function initBgCanvas() {
+  const canvas = document.getElementById('bgCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const pts = [];
+  const SUITS = ['♠','♦','♣','♥'];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 20; i++) pts.push(mkPt(canvas));
+
+  function mkPt(c) {
+    return {
+      x: Math.random() * c.width,
+      y: Math.random() * c.height,
+      suit: SUITS[Math.floor(Math.random() * 4)],
+      size: Math.random() * 18 + 8,
+      speed: Math.random() * 0.3 + 0.1,
+      drift: (Math.random() - 0.5) * 0.2,
+      rot: Math.random() * Math.PI * 2,
+      rotS: (Math.random() - 0.5) * 0.008,
+      alpha: Math.random() * 0.06 + 0.02,
+      red: Math.random() > 0.5,
+    };
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach((p, i) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.font = `${p.size}px serif`;
+      ctx.fillStyle = p.red ? `rgba(192,57,43,${p.alpha})` : `rgba(255,255,255,${p.alpha})`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.suit, 0, 0);
+      ctx.restore();
+      p.y -= p.speed;
+      p.x += p.drift;
+      p.rot += p.rotS;
+      if (p.y < -40) { pts.splice(i, 1); pts.push(mkPt(canvas)); }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── 3. Scroll Reveal (IntersectionObserver) ───────────────────
+function initScrollReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-stagger')
+    .forEach(el => obs.observe(el));
+}
+
+// ── 4. Ripple Effect on Buttons ───────────────────────────────
+function initRipple() {
+  document.querySelectorAll('.count-btn, .card-reroll, .spin-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const r = document.createElement('span');
+      r.className = 'ripple';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${e.clientX - rect.left - size/2}px;
+        top:${e.clientY - rect.top - size/2}px;
+      `;
+      this.appendChild(r);
+      setTimeout(() => r.remove(), 600);
+    });
+  });
+}
+
+// ── 5. 3D Card Tilt on Hover ──────────────────────────────────
+function initCardTilt() {
+  document.addEventListener('mousemove', e => {
+    document.querySelectorAll('.player-card').forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const cx   = rect.left + rect.width  / 2;
+      const cy   = rect.top  + rect.height / 2;
+      const dx   = (e.clientX - cx) / (rect.width  / 2);
+      const dy   = (e.clientY - cy) / (rect.height / 2);
+      const dist = Math.sqrt(dx*dx + dy*dy);
+
+      if (dist < 1.8) {
+        const tiltX =  dy * 8;
+        const tiltY = -dx * 8;
+        card.style.transform = `perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(6px)`;
+      } else {
+        card.style.transform = '';
+      }
+    });
+  });
+
+  // Reset on mouse leave viewport
+  document.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.player-card').forEach(c => c.style.transform = '');
+  });
+}
+
+// ── Re-observe new cards after spin ──────────────────────────
+function reObserveCards() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.player-card').forEach(c => obs.observe(c));
+}
+
+// Flash result header
+function flashResultHeader() {
+  const h = document.getElementById('resultHeader');
+  h.classList.remove('flash');
+  void h.offsetWidth; // reflow
+  h.classList.add('flash');
+}
+
+
 
 
 // ── Player Count ──────────────────────────────────────────────
