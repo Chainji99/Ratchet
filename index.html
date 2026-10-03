@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CODM GUN ROULETTE</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&family=Cinzel:wght@400;700&family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ===== INTRO ANIMATION ===== -->
+  <div id="intro-screen">
+    <div class="intro-bg-pattern"></div>
+    <div class="intro-content">
+      <div class="intro-suit top-left">♠</div>
+      <div class="intro-suit top-right">♦</div>
+      <div class="intro-suit bottom-left">♣</div>
+      <div class="intro-suit bottom-right">♥</div>
+
+      <div class="intro-card-deck">
+        <div class="card-flip c1"><div class="card-face"><span>♠</span></div></div>
+        <div class="card-flip c2"><div class="card-face"><span>♦</span></div></div>
+        <div class="card-flip c3"><div class="card-face"><span>♣</span></div></div>
+        <div class="card-flip c4"><div class="card-face"><span>♥</span></div></div>
+        <div class="card-flip c5"><div class="card-face"><span>A</span></div></div>
+      </div>
+
+      <div class="intro-title-wrap">
+        <p class="intro-sub">CALL OF DUTY MOBILE</p>
+        <h1 class="intro-title">GUN<br>ROULETTE</h1>
+        <p class="intro-tagline">Deal your fate. Pull your trigger.</p>
+      </div>
+
+      <div class="intro-divider">
+        <span>✦</span><span class="line"></span><span>✦</span>
+      </div>
+
+      <button class="intro-btn" id="enterBtn" onclick="enterSite()">
+        <span class="btn-text">ENTER</span>
+        <span class="btn-icon">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== MAIN SITE ===== -->
+  <div id="main-site" class="hidden">
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-suits">♠ ♦ ♣ ♥</div>
+      <div class="header-center">
+        <h1 class="site-title">CODM GUN ROULETTE</h1>
+        <p class="site-subtitle">Call of Duty Mobile · Weapon Randomizer</p>
+      </div>
+      <div class="header-suits">♥ ♣ ♦ ♠</div>
+    </header>
+
+    <!-- Player Select -->
+    <section class="player-section">
+      <h2 class="section-title">
+        <span class="ornament">✦</span>
+        SELECT PLAYERS
+        <span class="ornament">✦</span>
+      </h2>
+      <div class="player-count-row">
+        <button class="count-btn" onclick="setPlayers(1)">1</button>
+        <button class="count-btn" onclick="setPlayers(2)">2</button>
+        <button class="count-btn active" onclick="setPlayers(3)">3</button>
+        <button class="count-btn" onclick="setPlayers(4)">4</button>
+        <button class="count-btn" onclick="setPlayers(5)">5</button>
+      </div>
+      <p class="player-display">Players: <strong id="playerCountDisplay">3</strong></p>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="filter-section">
+      <h2 class="section-title">
+        <span class="ornament">✦</span>
+        WEAPON CLASS
+        <span class="ornament">✦</span>
+      </h2>
+      <div class="filter-row" id="categoryFilters">
+        <label class="filter-chip active"><input type="checkbox" value="AR" checked> AR</label>
+        <label class="filter-chip active"><input type="checkbox" value="SMG" checked> SMG</label>
+        <label class="filter-chip active"><input type="checkbox" value="Sniper" checked> Sniper</label>
+        <label class="filter-chip active"><input type="checkbox" value="LMG" checked> LMG</label>
+        <label class="filter-chip active"><input type="checkbox" value="Shotgun" checked> Shotgun</label>
+        <label class="filter-chip active"><input type="checkbox" value="Marksman" checked> Marksman</label>
+      </div>
+    </section>
+
+    <!-- Spin Button -->
+    <section class="spin-section">
+      <button class="spin-btn" id="spinBtn" onclick="spinGuns()">
+        <div class="spin-btn-inner">
+          <span class="spin-icon">🎯</span>
+          <span class="spin-text">RANDOMIZE</span>
+          <span class="spin-icon">🎯</span>
+        </div>
+      </button>
+    </section>
+
+    <!-- Result Cards -->
+    <section class="result-section" id="resultSection">
+      <div class="result-header hidden" id="resultHeader">
+        <h2 class="section-title">
+          <span class="ornament">✦</span>
+          RESULTS
+          <span class="ornament">✦</span>
+        </h2>
+      </div>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-suits">♠ ♦ ♣ ♥</div>
+      <p>CODM GUN ROULETTE &copy; 2026</p>
+      <p class="footer-sub">May your aim be true.</p>
+      <div class="footer-suits">♥ ♣ ♦ ♠</div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
