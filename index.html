@@ -13,37 +13,52 @@
 </head>
 <body>
 
-  <!-- ===== INTRO ANIMATION ===== -->
+  <!-- ===== CINEMATIC INTRO ===== -->
   <div id="intro-screen">
-    <div class="intro-bg-pattern"></div>
-    <div class="intro-content">
-      <div class="intro-suit top-left">♠</div>
-      <div class="intro-suit top-right">♦</div>
-      <div class="intro-suit bottom-left">♣</div>
-      <div class="intro-suit bottom-right">♥</div>
+    <!-- Canvas for particle suits -->
+    <canvas id="introCanvas"></canvas>
 
-      <div class="intro-card-deck">
-        <div class="card-flip c1"><div class="card-face"><span>♠</span></div></div>
-        <div class="card-flip c2"><div class="card-face"><span>♦</span></div></div>
-        <div class="card-flip c3"><div class="card-face"><span>♣</span></div></div>
-        <div class="card-flip c4"><div class="card-face"><span>♥</span></div></div>
-        <div class="card-flip c5"><div class="card-face"><span>A</span></div></div>
+    <!-- Phase 1: Loading bar -->
+    <div class="intro-phase" id="phase-load">
+      <div class="load-label">LOADING</div>
+      <div class="load-bar-wrap">
+        <div class="load-bar" id="loadBar"></div>
+      </div>
+      <div class="load-percent" id="loadPercent">0%</div>
+    </div>
+
+    <!-- Phase 2: Logo slam -->
+    <div class="intro-phase hidden" id="phase-logo">
+      <div class="logo-slam">
+        <div class="logo-top">CALL OF DUTY</div>
+        <div class="logo-main" id="logoMain">
+          <span class="logo-letter" style="--i:0">G</span><span class="logo-letter" style="--i:1">U</span><span class="logo-letter" style="--i:2">N</span>
+          <span class="logo-space"> </span>
+          <span class="logo-letter" style="--i:3">R</span><span class="logo-letter" style="--i:4">O</span><span class="logo-letter" style="--i:5">U</span><span class="logo-letter" style="--i:6">L</span><span class="logo-letter" style="--i:7">E</span><span class="logo-letter" style="--i:8">T</span><span class="logo-letter" style="--i:9">T</span><span class="logo-letter" style="--i:10">E</span>
+        </div>
+        <div class="logo-line" id="logoLine"></div>
+        <div class="logo-sub" id="logoSub">WEAPON RANDOMIZER</div>
       </div>
 
-      <div class="intro-title-wrap">
-        <p class="intro-sub">CALL OF DUTY MOBILE</p>
-        <h1 class="intro-title">GUN<br>ROULETTE</h1>
-        <p class="intro-tagline">Deal your fate. Pull your trigger.</p>
+      <!-- Fan of 5 cards -->
+      <div class="card-fan" id="cardFan">
+        <div class="fan-card fc1"><span class="fan-suit">♠</span><span class="fan-val">A</span></div>
+        <div class="fan-card fc2"><span class="fan-suit red">♥</span><span class="fan-val">K</span></div>
+        <div class="fan-card fc3"><span class="fan-suit">♣</span><span class="fan-val">Q</span></div>
+        <div class="fan-card fc4"><span class="fan-suit red">♦</span><span class="fan-val">J</span></div>
+        <div class="fan-card fc5"><span class="fan-suit">♠</span><span class="fan-val">10</span></div>
       </div>
 
-      <div class="intro-divider">
-        <span>✦</span><span class="line"></span><span>✦</span>
-      </div>
-
-      <button class="intro-btn" id="enterBtn" onclick="enterSite()">
-        <span class="btn-text">ENTER</span>
-        <span class="btn-icon">→</span>
+      <button class="intro-enter-btn" id="enterBtn" onclick="enterSite()">
+        <span class="enter-inner">
+          <span class="enter-suit">♠</span>
+          <span class="enter-text">ENTER</span>
+          <span class="enter-suit red">♦</span>
+        </span>
+        <div class="enter-glow"></div>
       </button>
+
+      <p class="intro-tagline-final">Deal your fate. Pull your trigger.</p>
     </div>
   </div>
 

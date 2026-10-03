@@ -41,19 +41,176 @@ const SUIT_COLORS = { "♠": "black", "♦": "red", "♣": "black", "♥": "red"
 let playerCount = 3;
 let spinning = false;
 
-// ── Intro Enter ───────────────────────────────────────────────
-function enterSite() {
-  const intro = document.getElementById("intro-screen");
-  const main  = document.getElementById("main-site");
+// ── CINEMATIC INTRO ENGINE ────────────────────────────────────
 
-  intro.classList.add("fade-out");
-  main.classList.remove("hidden");
+// ── Canvas Particle System ────────────────────────────────────
+const PARTICLE_SUITS = ['♠','♦','♣','♥'];
+let particles = [];
+let animFrameId = null;
+
+function initCanvas() {
+  const canvas = document.getElementById('introCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Spawn particles
+  for (let i = 0; i < 28; i++) spawnParticle(canvas);
+
+  function spawnParticle(c) {
+    particles.push({
+      x:     Math.random() * c.width,
+      y:     Math.random() * c.height + c.height,
+      suit:  PARTICLE_SUITS[Math.floor(Math.random() * 4)],
+      size:  Math.random() * 22 + 10,
+      speed: Math.random() * 0.6 + 0.2,
+      drift: (Math.random() - 0.5) * 0.5,
+      rot:   Math.random() * Math.PI * 2,
+      rotS:  (Math.random() - 0.5) * 0.02,
+      alpha: Math.random() * 0.08 + 0.03,
+      red:   Math.random() > 0.5,
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, idx) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.font = `${p.size}px serif`;
+      ctx.fillStyle = p.red
+        ? `rgba(192,57,43,${p.alpha})`
+        : `rgba(255,255,255,${p.alpha})`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.suit, 0, 0);
+      ctx.restore();
+
+      p.y   -= p.speed;
+      p.x   += p.drift;
+      p.rot += p.rotS;
+
+      if (p.y < -50) {
+        particles.splice(idx, 1);
+        spawnParticle(canvas);
+      }
+    });
+    animFrameId = requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+}
+
+function stopCanvas() {
+  if (animFrameId) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+}
+
+// ── Phase 1: Loading Bar ──────────────────────────────────────
+function runLoadingPhase() {
+  const bar     = document.getElementById('loadBar');
+  const pct     = document.getElementById('loadPercent');
+  let progress  = 0;
+  const steps   = [
+    { target: 15, delay: 60 },
+    { target: 40, delay: 35 },
+    { target: 65, delay: 50 },
+    { target: 85, delay: 25 },
+    { target: 97, delay: 60 },
+    { target: 100, delay: 20 },
+  ];
+  let stepIdx = 0;
+
+  function tick() {
+    if (stepIdx >= steps.length) {
+      // Loading done → transition to logo phase
+      setTimeout(transitionToLogo, 300);
+      return;
+    }
+    const step = steps[stepIdx];
+    if (progress < step.target) {
+      progress = Math.min(progress + 1, step.target);
+      bar.style.width   = progress + '%';
+      pct.textContent   = progress + '%';
+      setTimeout(tick, step.delay);
+    } else {
+      stepIdx++;
+      tick();
+    }
+  }
+  tick();
+}
+
+// ── Transition: Load → Logo ───────────────────────────────────
+function transitionToLogo() {
+  const phaseLoad = document.getElementById('phase-load');
+  const phaseLogo = document.getElementById('phase-logo');
+
+  phaseLoad.classList.add('fade-out-ph');
+  setTimeout(() => {
+    phaseLoad.classList.add('hidden');
+    phaseLogo.classList.remove('hidden');
+    runLogoPhase();
+  }, 500);
+}
+
+// ── Phase 2: Logo Slam + Cards + Button ──────────────────────
+function runLogoPhase() {
+  // Letters already animate via CSS (animation-delay per --i)
+  // Trigger line expand after letters are done (~1.1s)
+  setTimeout(() => {
+    document.getElementById('logoLine').classList.add('expand');
+  }, 900);
 
   setTimeout(() => {
-    main.classList.add("visible");
-    intro.style.display = "none";
-  }, 800);
+    document.getElementById('logoSub').classList.add('show');
+  }, 1200);
+
+  // Deal cards one by one
+  const fanCards = document.querySelectorAll('.fan-card');
+  fanCards.forEach((card, i) => {
+    setTimeout(() => card.classList.add('dealt'), 1000 + i * 120);
+  });
+
+  // Glitch flash on letters
+  setTimeout(() => {
+    document.querySelectorAll('.logo-letter').forEach(l => l.classList.add('glitch'));
+  }, 1400);
+
+  // Show enter button
+  setTimeout(() => {
+    document.getElementById('enterBtn').classList.add('show');
+    document.querySelector('.intro-tagline-final').classList.add('show');
+  }, 1700);
 }
+
+// ── Enter Site ────────────────────────────────────────────────
+function enterSite() {
+  const intro = document.getElementById('intro-screen');
+  const main  = document.getElementById('main-site');
+
+  stopCanvas();
+  intro.classList.add('fade-out');
+  main.classList.remove('hidden');
+
+  setTimeout(() => {
+    main.classList.add('visible');
+    intro.style.display = 'none';
+  }, 900);
+}
+
+// ── Boot on load ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initCanvas();
+  runLoadingPhase();
+  initFilterChips();
+});
+
 
 // ── Player Count ──────────────────────────────────────────────
 function setPlayers(n) {
@@ -65,16 +222,17 @@ function setPlayers(n) {
   });
 }
 
-// ── Category Filter ───────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-  // Sync filter chip active class on checkbox change
+
+// ── Category Filter (setup after DOM ready — merged into boot) ──
+function initFilterChips() {
   document.querySelectorAll(".filter-chip input").forEach(cb => {
     cb.addEventListener("change", () => {
       cb.closest(".filter-chip").classList.toggle("active", cb.checked);
       ensureAtLeastOne();
     });
   });
-});
+}
+
 
 function ensureAtLeastOne() {
   const checked = [...document.querySelectorAll(".filter-chip input:checked")];
