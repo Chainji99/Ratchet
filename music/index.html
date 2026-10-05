@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#0a0a0a"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>NOIR PLAYER</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+
+  <!-- ===== CINEMATIC INTRO ===== -->
+  <div id="intro-screen">
+    <canvas id="introCanvas"></canvas>
+
+    <!-- Phase 1: Loading -->
+    <div class="intro-phase" id="phase-load">
+      <div class="load-label">LOADING</div>
+      <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
+      <div class="load-percent" id="loadPercent">0%</div>
+    </div>
+
+    <!-- Phase 2: Logo -->
+    <div class="intro-phase hidden" id="phase-logo">
+      <div class="logo-slam">
+        <div class="logo-top">NO ADS · PURE MUSIC</div>
+        <div class="logo-main">
+          <span class="logo-letter" style="--i:0">N</span><span class="logo-letter" style="--i:1">O</span><span class="logo-letter" style="--i:2">I</span><span class="logo-letter" style="--i:3">R</span>
+          <span class="logo-space">&nbsp;</span>
+          <span class="logo-letter" style="--i:4">P</span><span class="logo-letter" style="--i:5">L</span><span class="logo-letter" style="--i:6">A</span><span class="logo-letter" style="--i:7">Y</span><span class="logo-letter" style="--i:8">E</span><span class="logo-letter" style="--i:9">R</span>
+        </div>
+        <div class="logo-line" id="logoLine"></div>
+        <div class="logo-sub" id="logoSub">YOUR MUSIC · YOUR WAY</div>
+      </div>
+
+      <div class="card-fan" id="cardFan">
+        <div class="fan-card fc1"><span class="fan-suit">♠</span><span class="fan-val">♪</span></div>
+        <div class="fan-card fc2"><span class="fan-suit red">♥</span><span class="fan-val">♫</span></div>
+        <div class="fan-card fc3"><span class="fan-suit">♣</span><span class="fan-val">♩</span></div>
+        <div class="fan-card fc4"><span class="fan-suit red">♦</span><span class="fan-val">♬</span></div>
+        <div class="fan-card fc5"><span class="fan-suit">♠</span><span class="fan-val">♪</span></div>
+      </div>
+
+      <button class="intro-enter-btn" id="enterBtn" onclick="enterSite()">
+        <span class="enter-inner">
+          <span class="enter-suit">♠</span>
+          <span class="enter-text">ENTER</span>
+          <span class="enter-suit red">♦</span>
+        </span>
+        <div class="enter-glow"></div>
+      </button>
+      <p class="intro-tagline-final">Drop your music. Feel the sound.</p>
+    </div>
+  </div>
+
+  <!-- ===== MAIN SITE ===== -->
+  <div id="main-site" class="hidden">
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="header-suits">♠ ♦ ♣ ♥</div>
+      <div class="header-center">
+        <h1 class="site-title">NOIR PLAYER</h1>
+        <p class="site-subtitle">No Ads · Local Music · Pure Sound</p>
+      </div>
+      <div class="header-suits">♥ ♣ ♦ ♠</div>
+    </header>
+
+    <!-- Drop Zone -->
+    <section class="drop-section reveal">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">♪</div>
+        <p class="drop-title">DROP MUSIC HERE</p>
+        <p class="drop-sub">or click to browse files</p>
+        <input type="file" id="fileInput" accept="audio/*" multiple hidden/>
+        <button class="drop-btn" onclick="document.getElementById('fileInput').click()">
+          <span>SELECT FILES</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Player Card -->
+    <section class="player-section reveal" id="playerSection" style="display:none">
+
+      <!-- Visualizer -->
+      <div class="visualizer-wrap">
+        <canvas id="vizCanvas"></canvas>
+        <div class="viz-overlay">
+          <div class="now-playing-label">NOW PLAYING</div>
+          <div class="now-suit" id="nowSuit">♠</div>
+        </div>
+      </div>
+
+      <!-- Track Info -->
+      <div class="track-info">
+        <p class="track-title" id="trackTitle">—</p>
+        <p class="track-artist" id="trackArtist">Unknown Artist</p>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-wrap">
+        <span class="time-label" id="currentTime">0:00</span>
+        <div class="progress-bar" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="progress-thumb" id="progressThumb"></div>
+        </div>
+        <span class="time-label" id="duration">0:00</span>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-row">
+        <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="Shuffle">⇄</button>
+        <button class="ctrl-btn" onclick="prevTrack()" title="Previous">⏮</button>
+        <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay()" title="Play/Pause">▶</button>
+        <button class="ctrl-btn" onclick="nextTrack()" title="Next">⏭</button>
+        <button class="ctrl-btn" id="repeatBtn" onclick="toggleRepeat()" title="Repeat">↻</button>
+      </div>
+
+      <!-- Volume -->
+      <div class="volume-row">
+        <span class="vol-icon">♪</span>
+        <input type="range" class="vol-slider" id="volSlider" min="0" max="1" step="0.01" value="0.8"/>
+        <span class="vol-label" id="volLabel">80%</span>
+      </div>
+    </section>
+
+    <!-- Playlist -->
+    <section class="playlist-section reveal" id="playlistSection" style="display:none">
+      <h2 class="section-title">
+        <span class="ornament">✦</span>
+        PLAYLIST
+        <span class="ornament">✦</span>
+      </h2>
+      <div class="playlist-grid" id="playlistGrid"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer reveal">
+      <div class="footer-suits">♠ ♦ ♣ ♥</div>
+      <p>NOIR PLAYER &copy; 2026</p>
+      <p class="footer-sub">No ads. No tracking. Just music.</p>
+      <div class="footer-suits">♥ ♣ ♦ ♠</div>
+    </footer>
+  </div>
+
+  <audio id="audioEl"></audio>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -17,7 +17,7 @@ const WEAPONS = {
   ],
   LMG: [
     "S36", "UL736", "RPD", "M4LMG", "Chopper", "Holger-26", "Hades",
-    "PKM", "Dingo", "MK9", "MG42", "RAAL-MG", "NG82", "DP27"
+    "PKM", "Dingo", "MK9", "MG42", "RAAL-MG", "MG82", "DP27"
   ],
   SMG: [
     "RUS79", "Chicom", "PDW", "Razorback", "MSMC", "HG40", "Pharo",
@@ -584,35 +584,5 @@ function rerollCard(btn, playerIndex) {
   }, 80);
 }
 
-// ── Main spin button also re-builds cards each time ───────────
-(function patchSpinBtn() {
-  const btn = document.getElementById("spinBtn");
-  btn.onclick = () => {
-    const pool = getAvailableGuns();
-    if (!pool.length || spinning) return;
 
-    const spinBtn = btn;
-    spinBtn.classList.add("spinning");
-    spinning = true;
 
-    // Always rebuild cards fresh
-    buildCards(playerCount, pool, true);
-    document.getElementById("resultHeader").classList.remove("hidden");
-
-    let frame = 0;
-    const interval = setInterval(() => {
-      frame++;
-      document.querySelectorAll(".player-card").forEach(card => {
-        const tempGun = randomFrom(pool);
-        card.querySelector(".card-gun-name").textContent = tempGun;
-        card.querySelector(".card-category").textContent = getGunCategory(tempGun);
-      });
-      if (frame >= 20) {
-        clearInterval(interval);
-        finalizeSpin(pool);
-        spinBtn.classList.remove("spinning");
-        spinning = false;
-      }
-    }, 80);
-  };
-})();
