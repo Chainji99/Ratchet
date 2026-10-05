@@ -40,7 +40,7 @@
         <div class="logo-sub" id="logoSub">YOUTUBE MUSIC WITHOUT INTERRUPTIONS</div>
       </div>
 
-      <!-- Fan of Cards with Suit and Music Note Badges -->
+      <!-- Card Fan -->
       <div class="card-fan" id="cardFan">
         <div class="fan-card fc1"><span class="fan-suit">♠</span><span class="fan-val">♪</span></div>
         <div class="fan-card fc2"><span class="fan-suit red">♥</span><span class="fan-val">▶</span></div>
@@ -79,157 +79,219 @@
       </div>
     </header>
 
-    <!-- Search Section -->
-    <section class="search-section reveal">
-      <h2 class="section-title">
-        <span class="ornament">✦</span>
-        SEARCH OR PASTE YOUTUBE
-        <span class="ornament">✦</span>
-      </h2>
+    <!-- View Mode Switcher -->
+    <div class="view-switch-container">
+      <div class="view-switch-row">
+        <button class="view-tab active" id="tabCards" onclick="switchView('cards')">
+          <span class="tab-icon">🃏</span>
+          <span class="tab-text">MUSIC CARDS (เลือกเพลงตามหมวด)</span>
+        </button>
+        <button class="view-tab" id="tabPortal" onclick="switchView('portal')">
+          <span class="tab-icon">📺</span>
+          <span class="tab-text">YOUTUBE BROWSER (เปิดยูทูปเลือกเอง ไร้โฆษณา)</span>
+        </button>
+      </div>
+    </div>
 
-      <!-- Search Box with autocomplete -->
-      <div class="search-container">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" class="search-input"
-            placeholder="Paste YouTube Link or Type Song / Artist..."
-            autocomplete="off"/>
-          <button class="paste-btn" id="pasteBtn" onclick="handlePaste()" title="Paste from clipboard">PASTE</button>
-          <button class="search-btn" id="searchBtn" onclick="handleSearch()">
-            <span>SEARCH</span>
-          </button>
+    <!-- ================= VIEW 1: CARDS & SEARCH ================= -->
+    <div id="viewCards">
+
+      <!-- Search Section -->
+      <section class="search-section reveal">
+        <h2 class="section-title">
+          <span class="ornament">✦</span>
+          SEARCH OR PASTE YOUTUBE
+          <span class="ornament">✦</span>
+        </h2>
+
+        <!-- Search Box -->
+        <div class="search-container">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input"
+              placeholder="Paste YouTube Link or Type Song / Artist..."
+              autocomplete="off"/>
+            <button class="paste-btn" id="pasteBtn" onclick="handlePaste()" title="Paste from clipboard">PASTE</button>
+            <button class="search-btn" id="searchBtn" onclick="handleSearch()">
+              <span>SEARCH</span>
+            </button>
+          </div>
+          <!-- Autocomplete Suggestions -->
+          <div class="suggestions-list hidden" id="suggestionsList"></div>
         </div>
-        <!-- Autocomplete Suggestions Dropdown -->
-        <div class="suggestions-list hidden" id="suggestionsList"></div>
-      </div>
 
-      <p class="search-hint">
-        <span class="hint-key">Enter</span> to Search &nbsp;·&nbsp;
-        <span class="hint-key">Paste URL</span> (youtu.be / youtube.com) to Play Instantly
-      </p>
+        <p class="search-hint">
+          <span class="hint-key">Enter</span> to Search &nbsp;·&nbsp;
+          <span class="hint-key">Paste URL</span> (youtu.be / youtube.com) to Play Instantly
+        </p>
 
-      <!-- Quick Genre Filter Chips -->
-      <div class="genre-row">
-        <span class="genre-label">QUICK PLAY:</span>
-        <button class="genre-chip" onclick="quickSearch('lofi hip hop radio beats to relax')">☕ Lofi Chill</button>
-        <button class="genre-chip" onclick="quickSearch('gaming music edm bass boost')">⚡ Gaming / EDM</button>
-        <button class="genre-chip" onclick="quickSearch('synthwave retrowave 80s instrumental')">🌆 Synthwave</button>
-        <button class="genre-chip" onclick="quickSearch('phonk drift aggressive')">💀 Phonk</button>
-        <button class="genre-chip" onclick="quickSearch('anime chill ost playlist')">🌸 Anime Chill</button>
-        <button class="genre-chip" onclick="quickSearch('top hit songs 2026')">🎧 Pop Hits</button>
-        <button class="genre-chip" onclick="quickSearch('rock metal best hits')">🎸 Rock & Metal</button>
-      </div>
+        <!-- Search Results Grid (when searched) -->
+        <div class="search-results hidden" id="searchResults"></div>
+      </section>
 
-      <!-- Search Results Grid -->
-      <div class="search-results hidden" id="searchResults"></div>
-    </section>
-
-    <!-- Now Playing & Player Section -->
-    <section class="player-section reveal hidden" id="playerSection">
-      
-      <!-- Left Column: Album Art Card with Visualizer Animation -->
-      <div class="player-left">
-        <div class="album-art-card">
-          <!-- Card Corner Badges -->
-          <div class="card-corner tl">
-            <span class="corner-suit" id="cornerSuitTL">♠</span>
-            <span class="corner-tag">NOIR</span>
-          </div>
-          <div class="card-corner br">
-            <span class="corner-suit" id="cornerSuitBR">♠</span>
-            <span class="corner-tag">SOUND</span>
-          </div>
-
-          <div class="album-art-wrap">
-            <img id="albumArt" src="" alt="Album Artwork" class="album-art"/>
-            <div class="album-overlay">
-              <span class="album-suit-badge" id="albumSuitBadge">♠</span>
+      <!-- Now Playing & Player Section -->
+      <section class="player-section reveal hidden" id="playerSection">
+        
+        <!-- Left Column: Album Art Card -->
+        <div class="player-left">
+          <div class="album-art-card">
+            <!-- Card Corner Badges -->
+            <div class="card-corner tl">
+              <span class="corner-suit" id="cornerSuitTL">♠</span>
+              <span class="corner-tag">NOIR</span>
             </div>
-            <!-- Animated Equalizer Bars Overlay -->
-            <div class="eq-overlay" id="eqOverlay">
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
-              <span class="eq-bar"></span>
+            <div class="card-corner br">
+              <span class="corner-suit" id="cornerSuitBR">♠</span>
+              <span class="corner-tag">SOUND</span>
+            </div>
+
+            <div class="album-art-wrap">
+              <img id="albumArt" src="" alt="Album Artwork" class="album-art"/>
+              <div class="album-overlay">
+                <span class="album-suit-badge" id="albumSuitBadge">♠</span>
+              </div>
+              <!-- Equalizer Bars Animation -->
+              <div class="eq-overlay" id="eqOverlay">
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+              </div>
+            </div>
+
+            <!-- Track Info -->
+            <div class="track-info">
+              <p class="track-title" id="trackTitle">—</p>
+              <p class="track-artist" id="trackArtist">—</p>
             </div>
           </div>
 
-          <!-- Track Information -->
-          <div class="track-info">
-            <p class="track-title" id="trackTitle">—</p>
-            <p class="track-artist" id="trackArtist">—</p>
+          <!-- Quick Controls -->
+          <div class="player-quick-controls">
+            <button class="pqc-btn" id="prevBtn" onclick="prevInQueue()" title="Previous Song">⏮ PREV</button>
+            <button class="pqc-btn" id="loopBtn" onclick="toggleLoop()" title="Loop Track">🔁 LOOP</button>
+            <button class="pqc-btn" id="nextBtn" onclick="nextInQueue()" title="Next Song">NEXT ⏭</button>
           </div>
         </div>
 
-        <!-- Quick Controls Bar -->
-        <div class="player-quick-controls">
-          <button class="pqc-btn" id="prevBtn" onclick="prevInQueue()" title="Previous Song">⏮ PREV</button>
-          <button class="pqc-btn" id="loopBtn" onclick="toggleLoop()" title="Loop Track">🔁 LOOP</button>
-          <button class="pqc-btn" id="nextBtn" onclick="nextInQueue()" title="Next Song">NEXT ⏭</button>
-        </div>
-      </div>
+        <!-- Right Column: Player Embed & Queue -->
+        <div class="player-right">
 
-      <!-- Right Column: Player Embed & Queue Management -->
-      <div class="player-right">
-
-        <!-- Server Selector Bar -->
-        <div class="server-bar">
-          <div class="server-status">
-            <span class="status-dot"></span>
-            <span class="server-label">STREAM:</span>
-            <span class="server-name" id="currentServerName">Invidious Ad-Free</span>
+          <!-- Server Selector Bar -->
+          <div class="server-bar">
+            <div class="server-status">
+              <span class="status-dot"></span>
+              <span class="server-label">STREAM:</span>
+              <span class="server-name" id="currentServerName">Invidious Ad-Free</span>
+            </div>
+            <div class="server-switchers">
+              <button class="server-btn active" id="srvInvidious" onclick="setServer('invidious')">Invidious (No Ads)</button>
+              <button class="server-btn" id="srvPiped" onclick="setServer('piped')">Yewtu.be</button>
+              <button class="server-btn" id="srvNoCookie" onclick="setServer('nocookie')">YT Clean</button>
+            </div>
           </div>
-          <div class="server-switchers">
-            <button class="server-btn active" id="srvInvidious" onclick="setServer('invidious')">Invidious (No Ads)</button>
-            <button class="server-btn" id="srvPiped" onclick="setServer('piped')">Yewtu.be</button>
-            <button class="server-btn" id="srvNoCookie" onclick="setServer('nocookie')">YT Clean</button>
+
+          <!-- Embed Iframe -->
+          <div class="iframe-wrap" id="iframeWrap">
+            <iframe id="ytPlayer"
+              frameborder="0"
+              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+
+          <!-- Queue Section -->
+          <div class="queue-section" id="queueSection">
+            <div class="queue-header">
+              <div class="queue-title-wrap">
+                <span class="queue-icon">📜</span>
+                <span class="queue-label">PLAYLIST QUEUE</span>
+                <span class="queue-count" id="queueCount">(0)</span>
+              </div>
+              <button class="clear-btn" onclick="clearQueue()">CLEAR QUEUE</button>
+            </div>
+            <div class="queue-list" id="queueList"></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Browse Categories & Curated Song Catalog -->
+      <section class="catalog-section reveal">
+        <h2 class="section-title">
+          <span class="ornament">✦</span>
+          DISCOVER &amp; PICK SONGS
+          <span class="ornament">✦</span>
+        </h2>
+
+        <!-- Category Selector Chips -->
+        <div class="catalog-tabs">
+          <button class="cat-chip active" onclick="loadCategory('thai', this)">🇹🇭 เพลงไทยฮิต</button>
+          <button class="cat-chip" onclick="loadCategory('lofi', this)">☕ Lofi &amp; Chill</button>
+          <button class="cat-chip" onclick="loadCategory('gaming', this)">⚡ Gaming &amp; EDM</button>
+          <button class="cat-chip" onclick="loadCategory('phonk', this)">💀 Phonk &amp; Bass</button>
+          <button class="cat-chip" onclick="loadCategory('global', this)">🎧 Global Hits</button>
+          <button class="cat-chip" onclick="loadCategory('anime', this)">🌸 Anime &amp; J-Pop</button>
+          <button class="cat-chip" onclick="loadCategory('rock', this)">🎸 Rock &amp; Metal</button>
+        </div>
+
+        <!-- Song Cards Grid -->
+        <div class="catalog-grid" id="catalogGrid"></div>
+      </section>
+
+      <!-- Recent History Section -->
+      <section class="recent-section reveal hidden" id="recentSection">
+        <h2 class="section-title">
+          <span class="ornament">✦</span>
+          RECENTLY PLAYED
+          <span class="ornament">✦</span>
+        </h2>
+        <div class="recent-grid" id="recentGrid"></div>
+      </section>
+
+    </div>
+
+    <!-- ================= VIEW 2: FULL YOUTUBE BROWSER PORTAL ================= -->
+    <div id="viewPortal" class="hidden">
+      <section class="portal-section">
+        
+        <!-- Portal Control Bar -->
+        <div class="portal-toolbar">
+          <div class="portal-info">
+            <span class="portal-live-badge">LIVE YOUTUBE BROWSER</span>
+            <span class="portal-desc">เปิดค้นหา ท่องเว็บยูทูป และคลิกเลือกเพลงได้อิสระ โดยไม่มีโฆษณาคั่น</span>
+          </div>
+
+          <div class="portal-actions">
+            <button class="portal-btn" onclick="reloadPortal('trending')" title="Trending Music">🔥 เพลงฮิตติดเทรนด์</button>
+            <button class="portal-btn" onclick="reloadPortal('home')" title="YouTube Home">🏠 หน้าแรก</button>
+            <button class="portal-btn" onclick="reloadPortal('refresh')" title="Refresh">🔄 รีเฟรช</button>
+            <button class="portal-btn" onclick="togglePortalFullscreen()" title="Fullscreen">⛶ ขยายเต็มจอ</button>
           </div>
         </div>
 
-        <!-- YouTube Embed Iframe (Ad-Free) -->
-        <div class="iframe-wrap" id="iframeWrap">
-          <iframe id="ytPlayer"
+        <!-- Portal Frame -->
+        <div class="portal-frame-wrap" id="portalFrameWrap">
+          <iframe id="portalIframe"
+            src="about:blank"
             frameborder="0"
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write"
             allowfullscreen>
           </iframe>
         </div>
 
-        <!-- Queue Section -->
-        <div class="queue-section" id="queueSection">
-          <div class="queue-header">
-            <div class="queue-title-wrap">
-              <span class="queue-icon">📜</span>
-              <span class="queue-label">PLAYLIST QUEUE</span>
-              <span class="queue-count" id="queueCount">(0)</span>
-            </div>
-            <button class="clear-btn" onclick="clearQueue()">CLEAR QUEUE</button>
-          </div>
-          <div class="queue-list" id="queueList"></div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- Recent History Section -->
-    <section class="recent-section reveal hidden" id="recentSection">
-      <h2 class="section-title">
-        <span class="ornament">✦</span>
-        RECENTLY PLAYED
-        <span class="ornament">✦</span>
-      </h2>
-      <div class="recent-grid" id="recentGrid"></div>
-    </section>
+      </section>
+    </div>
 
     <!-- Footer -->
     <footer class="site-footer reveal">
       <div class="footer-suits">♠ ♦ ♣ ♥</div>
-      <p>NOIR PLAYER &copy; 2026 · Pure Music Without Commercials</p>
-      <p class="footer-sub">Ad-Free Streams Powered by Open Invidious &amp; Piped Protocols</p>
+      <p>NOIR PLAYER &copy; 2026 · Pure YouTube Music Without Ads</p>
+      <p class="footer-sub">Ad-Free Stream Protocols Powered by Open Invidious &amp; Piped</p>
       <div class="footer-suits">♥ ♣ ♦ ♠</div>
     </footer>
   </div>
